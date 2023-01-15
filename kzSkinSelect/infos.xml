@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document>
+	<title>kzSkinSelect</title>
+	<author>J.P. Pourrez "Bazooka07"</author>
+	<version>1.2.3</version>
+	<date>01/11/2022</date>
+	<site>https://kazimentou.fr/repo/</site>
+	<description><![CDATA[Permet au visiteur de tester le thème de son choix.]]></description>
+	<scope>site</scope>
+</document>
