@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <document>
 	<title>kzSkinSelect</title>
-	<author>J.P. Pourrez "Bazooka07"</author>
-	<version>1.2.3</version>
-	<date>01/11/2022</date>
+	<author>J.P. Pourrez "Bazooka07 forked by GC-nomade"</author>
+	<version>1.2.3.X</version>
+	<date>15/01/2023</date>
 	<site>https://kazimentou.fr/repo/</site>
-	<description><![CDATA[Permet au visiteur de tester le thème de son choix.]]></description>
+	<description><![CDATA[Permet au visiteur de tester le thème de son choix. Forked afficha le selecteur en haut de page et le compte le nombre de telechargement.]]></description>
 	<scope>site</scope>
 </document>
