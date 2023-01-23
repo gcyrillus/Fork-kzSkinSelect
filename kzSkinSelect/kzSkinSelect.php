@@ -9,6 +9,8 @@ if (!defined('PLX_ROOT')) { exit; }
  * La boîte de seélection de thèmes s'affiche en base et à droite du site.
  * Il n'y a aucun hook à ajouter aux thèmes. Activez simplement ce plugin pour vos essais.
  *
+ * Fork 15/01/2023 : fixed le selecteur en haut de page et compte les download.
+ *
  * @author	J.P. Pourrez aka Bazooka07
  * @update  2022-11-01
  * @update  2021-11-09
@@ -128,13 +130,18 @@ class kzSkinSelect extends plxPlugin {
 		$themes = array();
 		// On collecte les thèmes disponibles sur le site
         $pattern = PLX_ROOT . $themesRoot . '*/infos.xml';
+		$data_file= PLX_ROOT.'plugins/'.__CLASS__.'/themeDldatas.json';	
+		if(!file_exists($data_file)) { $make=true;}	
+		else {$make=false; $dlThemesStats = json_decode(file_get_contents($data_file), true);}
 		foreach(glob($pattern) as $filename) {
-
 			$root = preg_replace('@/infos.xml$@', '', $filename);
             $folder = basename($root);
+			if($make==true) {$dlThemesStats[basename($root)] =  0;}
 			$caption = self::_title_theme($filename);
+				if(!isset($dlThemesStats[basename($root)])){$dlThemesStats[basename($root)]='0';$make=true;}
+				$caption .= ' donwload: '. $dlThemesStats[basename($root)];
 			if(strtolower($caption) != strtolower($folder)) {
-				$caption .= " ($folder)";
+				//$caption .= " ($folder)";
 			}
             // Tague les thèmes sans aperçu
             $mark = ' *';
@@ -146,7 +153,7 @@ class kzSkinSelect extends plxPlugin {
 			}
             $themes[$folder] = $caption.$mark;
 		}
-
+		if($make==true) {file_put_contents($data_file, json_encode($dlThemesStats,true) );}
 		if(count($themes) > 1) {
 			// Plusieurs thèmes sont disponibles
 			asort($themes);
@@ -236,7 +243,28 @@ class kzSkinSelect extends plxPlugin {
 <?php
 		return ob_get_clean();
 	}
+	function dlStats($theme) {
+		$data_file= PLX_ROOT.'plugins/'.__CLASS__.'/themeDldatas.json';
+		if(!file_exists($data_file)) { 
+		$pattern = PLX_ROOT .'themes/*';
+		foreach(glob($pattern) as $found) {
+			if(is_dir($found)){	
+				$dlThemesStats[basename($found)] =  0;
+					if (basename($found) == $theme) {
+					 $dlThemesStats[basename($found)] = 1 ; 
+					}
+				}
+			}
+			file_put_contents($data_file, json_encode($dlThemesStats,true) );
+		}
+		else {
+		$dlThemesStats = json_decode(file_get_contents($data_file), true);
+		$dlThemesStats[$theme] = $dlThemesStats[$theme] + 1 ;
+		file_put_contents($data_file, json_encode($dlThemesStats,true) );
+		}
 
+	}
+	
 	function download($racine_themes, $theme) {
 		$root = realpath($racine_themes);
 		$offset = strlen($root) + 1;
@@ -246,6 +274,7 @@ class kzSkinSelect extends plxPlugin {
 		if ($zip->openDir($name, ZipArchive::CREATE | ZipArchive::OVERWRITE, $offset) === true) {
 			$zip->addDir($root, $offset);
 			$zip->close();
+			$this->dlStats($theme);
 
 			if(file_exists($name)) {
 				header('Content-Type: application/x-zip');
@@ -384,7 +413,7 @@ if($kztemplateNotFound) {
 				left:0;
 				font-size:12px;
 			}
-			body{padding-top:30px;}
+			body{margin-top:30px;}
 
 			form.kzSkinSelect * {
 				margin: 0;
@@ -406,6 +435,7 @@ if($kztemplateNotFound) {
 
 			form.kzSkinSelect button {
 				padding: 0.25rem 0.5rem;
+				grid-column: auto /span 1;
 			}
 		</style>
 <?php
