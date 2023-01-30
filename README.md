@@ -11,4 +11,4 @@ Compte et affiche le nombre de tèlechargement par thèmes.
 
 Un marge haute de 30pixels sur body assure en principe un espace pour l'afficher sans se superposer aux textes ou élements du thème chargé.
 
-Avis ou support à faire sur le forum officiel de PluXml : https://forum.pluxml.org
+Avis ou support à faire, de préférence, sur le forum officiel de PluXml : https://forum.pluxml.org
