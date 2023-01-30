@@ -9,7 +9,8 @@ if (!defined('PLX_ROOT')) { exit; }
  * La boîte de seélection de thèmes s'affiche en base et à droite du site.
  * Il n'y a aucun hook à ajouter aux thèmes. Activez simplement ce plugin pour vos essais.
  *
- * Fork 15/01/2023 : fixed le selecteur en haut de page et compte les download.
+ * Fork 		2023-01-11 	: fixed le selecteur en haut de page et compte les download.
+ * Fork update 	2023-01-30 	: Ajout d'un compteur de telechargements
  *
  * @author	J.P. Pourrez aka Bazooka07
  * @update  2022-11-01
@@ -57,7 +58,7 @@ class kzSkinSelect extends plxPlugin {
 	# recherche d'une sidebar principale dans la page html
 	const PATTERNS = array(
 		# préférence à l'id
-		'#(<(?:body)\b[^>]*?(?)\b[^"]*"[^>]*>)#i', # on cherche body
+		'#(<(?:body)\b[^>]*?(?)\b[^"]*"[^>]*>)#i', # court-circuit : on cherche body et cela s'arrête là.
 		'#(<(?:div|aside)\b[^>]*\sid="(?:main-|site-)?(?:aside|sidebar)\b[^"]*"[^>]*>)#i', # on cherche un id
 		'#(<(?:div|aside)\b[^>]*\sclass="[^"]*\b(?:main-|site-)?(?:sidebar|aside)\b[^"]*">)#i', # on cherche un class
 	);
@@ -138,8 +139,8 @@ class kzSkinSelect extends plxPlugin {
             $folder = basename($root);
 			if($make==true) {$dlThemesStats[basename($root)] =  0;}
 			$caption = self::_title_theme($filename);
-				if(!isset($dlThemesStats[basename($root)])){$dlThemesStats[basename($root)]='0';$make=true;}
-				$caption .= ' donwload: '. $dlThemesStats[basename($root)];
+				if(!isset($dlThemesStats[basename($root)])){$dlThemesStats[basename($root)]='0';$update=true;}
+				$caption .= ' | '. $dlThemesStats[basename($root)]. ' Telechargement(s)';
 			if(strtolower($caption) != strtolower($folder)) {
 				//$caption .= " ($folder)";
 			}
@@ -153,7 +154,7 @@ class kzSkinSelect extends plxPlugin {
 			}
             $themes[$folder] = $caption.$mark;
 		}
-		if($make==true) {file_put_contents($data_file, json_encode($dlThemesStats,true) );}
+		if($update==true) {file_put_contents($data_file, json_encode($dlThemesStats,true) );}
 		if(count($themes) > 1) {
 			// Plusieurs thèmes sont disponibles
 			asort($themes);
